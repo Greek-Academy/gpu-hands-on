@@ -1,4 +1,11 @@
+import { UndefinedElementError, WebGPUUnavailableError } from './errors';
+
+/**
+ * singleton class
+ * ※ もし複数の canvas を管理したい場合は、singleton の記述を削除してください
+ */
 export class Canvas {
+  private static _instance: Canvas;
   static readonly webgpuContextId: 'webgpu' = 'webgpu';
 
   private constructor(
@@ -7,19 +14,34 @@ export class Canvas {
   ) {}
 
   static new(document: Document, selector: string): Canvas {
-    const element = document.querySelector<HTMLCanvasElement>(selector);
-    if (element === null) {
-      throw new Error('指定された要素が見つかりませんでした');
+    if (this._instance === undefined) {
+      const element = document.querySelector<HTMLCanvasElement>(selector);
+      if (element === null) {
+        throw new UndefinedElementError(
+          `Element not found [selector: ${selector}]`
+        );
+      }
+
+      const context = element.getContext(Canvas.webgpuContextId);
+      if (context === null) {
+        throw new WebGPUUnavailableError();
+      }
+
+      this._instance = new Canvas(element, context);
     }
 
-    const context = element.getContext(Canvas.webgpuContextId);
-    if (context === null) {
-      throw new Error(
-        'WebGPU がご利用のブラウザでサポートされていないか、設定で無効になっています'
-      );
-    }
+    return this._instance;
+  }
 
-    return new Canvas(element, context);
+  static recreate(document: Document, selector: string): Canvas {
+    if (this._instance !== undefined) {
+      delete this._instance;
+    }
+    return Canvas.new(document, selector);
+  }
+
+  get instance(): Canvas {
+    return Canvas._instance;
   }
 
   resizeFitToDevice(devicePixelRatio: number) {

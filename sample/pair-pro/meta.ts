@@ -1,6 +1,6 @@
 export default {
-  name: 'Animation',
-  description: '図形を動かす',
+  name: 'Pair Programing',
+  description: '二人一組でGPUプログラミングをしよう',
   filename: __DIRNAME__,
   sources: [],
 };

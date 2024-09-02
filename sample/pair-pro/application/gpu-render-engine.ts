@@ -11,7 +11,13 @@ type PipelineState = {
   topology: GPUPrimitiveTopology;
 };
 
+/**
+ * singleton class
+ * ※ もし複数の Render Engine を管理したい場合は、singleton の記述を削除してください
+ */
 export class GPURenderEngine {
+  private static _instance: GPURenderEngine;
+
   private constructor(
     public readonly device: GPUDevice,
     public readonly container: SpriteContainer,
@@ -19,10 +25,23 @@ export class GPURenderEngine {
   ) {}
 
   static new(device: GPUDevice) {
-    const factory = PipelineFactory.new(device);
-    const container = SpriteContainer.new();
+    if (this._instance === undefined) {
+      const factory = PipelineFactory.new(device);
+      const container = SpriteContainer.new();
+      this._instance = new GPURenderEngine(device, container, factory);
+    }
+    return this._instance;
+  }
 
-    return new GPURenderEngine(device, container, factory);
+  static recreate(device: GPUDevice) {
+    if (this._instance !== undefined) {
+      delete this._instance;
+    }
+    return GPURenderEngine.new(device);
+  }
+
+  get instance(): GPURenderEngine {
+    return GPURenderEngine._instance;
   }
 
   /**

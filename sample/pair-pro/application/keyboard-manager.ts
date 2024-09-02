@@ -16,7 +16,7 @@ export class KeyboardManager {
     return this._instance;
   }
 
-  static recreate(document: Document) {
+  static recreate(document: Document): KeyboardManager {
     if (this._instance !== undefined) {
       delete this._instance;
     }

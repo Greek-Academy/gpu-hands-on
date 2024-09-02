@@ -5,11 +5,8 @@ import {
   setupKeyboardManager,
   setupWebGPUContext,
 } from './application';
-import {
-  AfterHookCallback,
-  BeforeHookCallback,
-  renderPlayerBlock,
-} from './usecases';
+import { FrameActionHook, renderPlayerBlock } from './usecases';
+import { SampleEveryFrameAction } from './usecases/frames/sample-every-frame-action';
 
 async function main() {
   // ブラウザで WebGPU が使用できるか確認 & contextの取得
@@ -22,25 +19,21 @@ async function main() {
   const engine = bootEngine(context.device);
 
   // keyboard manager の立ち上げ
-  setupKeyboardManager();
+  const keyboardManager = setupKeyboardManager();
 
   /*
    * ここまでが初期設定
    * ---------------------------------------------
    */
 
-  // フレーム描画処理で追加実行したい処理
-  const beforeHooks: BeforeHookCallback[] = [renderPlayerBlock];
-  const afterHooks: AfterHookCallback[] = [];
+  // サンプル処理
+  renderPlayerBlock(engine, context.textureFormat, keyboardManager);
 
-  const frameContext = {
-    engine,
-    canvas,
-    textureFormat: context.textureFormat,
-  };
+  // 毎フレーム追加実行したい処理
+  const hooks: FrameActionHook[] = [new SampleEveryFrameAction()];
 
   // フレームの描画処理
-  runAnimationFrame(frameContext, { beforeHooks, afterHooks });
+  runAnimationFrame({ engine, canvas }, hooks);
 }
 
 main();

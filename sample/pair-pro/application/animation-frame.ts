@@ -1,7 +1,4 @@
-import {
-  AfterHookCallback,
-  BeforeHookCallback,
-} from '../usecases/frames/callback-interface';
+import { FrameActionHook } from '../usecases';
 import { Canvas } from './canvas';
 import { GPURenderContext } from './gpu-render-context';
 import { GPURenderEngine } from './gpu-render-engine';
@@ -9,31 +6,22 @@ import { GPURenderEngine } from './gpu-render-engine';
 type Context = {
   engine: GPURenderEngine;
   canvas: Canvas;
-  textureFormat: GPUTextureFormat;
-};
-
-type RenderHooks = {
-  beforeHooks: BeforeHookCallback[];
-  afterHooks: AfterHookCallback[];
 };
 
 export function runAnimationFrame(
-  { engine, canvas, textureFormat }: Context,
-  { beforeHooks = [], afterHooks = [] }: RenderHooks
+  { engine, canvas }: Context,
+  hooks: FrameActionHook[]
 ) {
   const frame = () => {
     const context = setupRenderContext(engine.device, canvas);
 
-    beforeHooks.forEach((callback: BeforeHookCallback) => {
-      callback(engine, textureFormat);
+    // hooks で受け取ったコールバック関数を実行
+    hooks.forEach((callback: FrameActionHook) => {
+      callback.execute();
     });
 
     engine.render(context);
     engine.submitQueue([context.completeRecording()]);
-
-    afterHooks.forEach((callback: AfterHookCallback) => {
-      callback(engine);
-    });
 
     // 再起呼び出しでフレーム描画処理を無限ループする
     requestAnimationFrame(frame);
