@@ -6,6 +6,7 @@ import { GPURenderContext } from './gpu-render-context';
 
 type PipelineState = {
   vertexWGSL: string;
+  vertexCount: GPUSize32;
   fragmentWGSL: string;
   fragmentTextureFormat: GPUTextureFormat;
   topology: GPUPrimitiveTopology;
@@ -60,6 +61,7 @@ export class GPURenderEngine {
   createSprite(
     {
       vertexWGSL,
+      vertexCount,
       fragmentWGSL,
       fragmentTextureFormat,
       topology,
@@ -75,7 +77,7 @@ export class GPURenderEngine {
     const pipeline = this.factory.create(vertex, fragment, primitive);
     const offset = Offset.new(x, y);
 
-    return Sprite.new(pipeline, offset);
+    return Sprite.new(pipeline, vertexCount, offset);
   }
 
   /**
@@ -92,7 +94,7 @@ export class GPURenderEngine {
 
     this.bindSpriteOffset(passEncoder, sprite);
     passEncoder.setPipeline(sprite.pipeline);
-    passEncoder.draw(4, 4);
+    passEncoder.draw(sprite.vertexCount);
     passEncoder.end();
   }
 

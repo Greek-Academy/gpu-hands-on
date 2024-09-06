@@ -11,6 +11,7 @@ export function renderPlayerBlock(
   // スプライトの生成
   const sprite = engine.createSprite({
     vertexWGSL: blockVertWGSL,
+    vertexCount: 4,
     fragmentWGSL: redFragWGSL,
     fragmentTextureFormat: textureFormat,
     topology: 'triangle-strip',
