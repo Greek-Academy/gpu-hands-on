@@ -1,4 +1,4 @@
-export default {
+export const squareMeta = {
   name: '📚 Square',
   description: '四角形を作成してみましょう',
   filename: __DIRNAME__,

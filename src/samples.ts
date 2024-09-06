@@ -1,6 +1,7 @@
-import triangle from '../sample/triangle/meta';
-import square from '../sample/square/meta';
-import pairPro from '../sample/pair-pro/meta';
+import { triangleMeta } from '../sample/triangle/meta';
+import { squareMeta } from '../sample/square/meta';
+import { computeShaderMeta } from '../sample/compute-shader/meta';
+import { pairProMeta } from '../sample/pair-pro/meta';
 
 export type SourceInfo = {
   path: string;
@@ -25,18 +26,24 @@ type PageCategory = {
 export const pageCategories: PageCategory[] = [
   {
     title: 'Step 1',
-    description: '簡単な図形を作成する',
+    description: '図形を作成する',
     samples: {
-      triangle,
-      square,
+      Triangle: triangleMeta,
+      Square: squareMeta,
     },
   },
-
   {
     title: 'Step 2',
-    description: 'ペアプロで遊んでみる',
+    description: 'GPUで計算する',
     samples: {
-      pairPro,
+      'Compute Shader': computeShaderMeta,
+    },
+  },
+  {
+    title: 'Step 3',
+    description: '[ペアプロ] WebGPUを使ってみる',
+    samples: {
+      'Pair Programing': pairProMeta,
     },
   },
 ];

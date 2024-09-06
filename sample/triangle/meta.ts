@@ -1,4 +1,4 @@
-export default {
+export const triangleMeta = {
   name: 'Triangle',
   description: '三角形を描画する',
   filename: __DIRNAME__,
