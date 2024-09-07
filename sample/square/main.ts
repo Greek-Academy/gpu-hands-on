@@ -1,4 +1,4 @@
-import triangleVertWGSL from './shaders/square.vert.wgsl';
+import squareVertWGSL from './shaders/square.vert.wgsl';
 import redFragWGSL from './shaders/red.frag.wgsl';
 import { quitIfWebGPUNotAvailable } from '../util';
 
@@ -24,7 +24,7 @@ const pipeline = device.createRenderPipeline({
   layout: 'auto',
   vertex: {
     module: device.createShaderModule({
-      code: triangleVertWGSL,
+      code: squareVertWGSL,
     }),
   },
   fragment: {
@@ -59,7 +59,7 @@ function frame() {
 
   const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
   passEncoder.setPipeline(pipeline);
-  passEncoder.draw(3);
+  passEncoder.draw(6);
   passEncoder.end();
 
   device.queue.submit([commandEncoder.finish()]);
